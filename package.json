@@ -1,6 +1,6 @@
 {
-  "name": "bluesky-emoji-spells-bot",
-  "description": "Bluesky Emoji Spells Bot",
+  "name": "emoji-spells-bot",
+  "description": "Emoji Spells Bot",
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MichaelPriebe/bluesky-emoji-spells-bot.git"
+    "url": "git+https://github.com/MichaelPriebe/emoji-spells-bot.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/MichaelPriebe/bluesky-emoji-spells-bot/issues"
+    "url": "https://github.com/MichaelPriebe/emoji-spells-bot/issues"
   },
-  "homepage": "https://github.com/MichaelPriebe/bluesky-emoji-spells-bot#readme",
+  "homepage": "https://github.com/MichaelPriebe/emoji-spells-bot#readme",
   "dependencies": {
     "@atproto/api": "^0.2.7",
     "cron": "^2.3.0",
