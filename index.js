@@ -3,16 +3,18 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-// Temporary fetch polyfill until DigitalOcean App Platform supports Node v18
+// Bluesky
 
-import fetch, { Headers, Request, Response } from "node-fetch";
+import BlueSkyPlatform from "./platforms/bluesky.js";
+const bluesky = new BlueSkyPlatform();
+await bluesky.login(process.env.BLUESKY_USERNAME, process.env.BLUESKY_PASSWORD);
+console.log("BlueSky: Logged in!");
 
-if (!globalThis.fetch) {
-  globalThis.fetch = fetch;
-  globalThis.Headers = Headers;
-  globalThis.Request = Request;
-  globalThis.Response = Response;
-}
+// Nostr
+
+const nostr = new NostrPlatform();
+await nostr.login(process.env.NOSTR_PRIVATE_KEY);
+console.log("Nostr: Logged in!");
 
 // Cron
 
@@ -21,20 +23,12 @@ import { CronJob } from "cron";
 // Openai
 
 import { Configuration, OpenAIApi } from "openai";
+import NostrPlatform from "./platforms/nostr.js";
 const openai = new OpenAIApi(
   new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
   })
 );
-
-// Bluesky
-
-import bsky from "@atproto/api";
-const { BskyAgent } = bsky;
-
-const bluesky = new BskyAgent({
-  service: "https://bsky.social",
-});
 
 const prompt = [
   "You are an emoji spell bot. You write emoji spells, and respond in json.",
@@ -60,47 +54,55 @@ const prompt = [
   '"desc" MUST be less than 200 characters.',
 ].join("\n");
 
-bluesky
-  .login({
-    identifier: process.env.BLUESKY_USERNAME,
-    password: process.env.BLUESKY_PASSWORD,
-  })
-  .then(() => {
-    console.log("Logged in!");
-
-    const job = new CronJob("11 * * * *", async () => {
-      try {
-        const completion = await openai.createChatCompletion({
-          model: "gpt-3.5-turbo",
-          messages: [
-            {
-              role: "system",
-              content: prompt,
-            },
-          ],
-        });
-
-        const { content } = completion.data.choices[0].message;
-        const parsed = JSON.parse(content);
-
-        const post = [
-          parsed.spell,
-          "",
-          `${parsed.name}: ${parsed.desc}`,
-          "",
-          "🔁 Repost to cast 🪄",
-        ].join("\n");
-
-        await bluesky.post({
-          text: post,
-        });
-
-        console.log("Posted:", post);
-      } catch (e) {
-        console.error(e);
-      }
+const job = new CronJob("11 * * * *", async () => {
+  let parsed;
+  try {
+    const completion = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: [
+        {
+          role: "system",
+          content: prompt,
+        },
+      ],
     });
 
-    console.log("Starting job!");
-    job.start();
-  });
+    const { content } = completion.data.choices[0].message;
+    parsed = JSON.parse(content);
+  } catch (e) {
+    console.error("Error with OpenAI:", e);
+  }
+
+  const post = [parsed.spell, "", `${parsed.name}: ${parsed.desc}`].join("\n");
+
+  // Bluesky
+  try {
+    const text = [
+      post,
+      "",
+      "❤️ Like to empower ✨",
+      "🔁 Repost to cast 🪄",
+    ].join("\n");
+    await bluesky.post(text);
+  } catch (e) {
+    console.error("Error with BlueSky:", e);
+  }
+
+  // Nostr
+  try {
+    const text = [
+      post,
+      "",
+      "⚡ Zap to empower ✨",
+      "🔁 Repost to cast 🪄",
+    ].join("\n");
+    await nostr.post(text);
+  } catch (e) {
+    console.error("Error with Nostr:", e);
+  }
+
+  console.log("Posted:", post);
+});
+
+console.log("Starting job!");
+job.start();
