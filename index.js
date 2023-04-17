@@ -68,7 +68,7 @@ bluesky
   .then(() => {
     console.log("Logged in!");
 
-    const job = new CronJob("0 * * * *", async () => {
+    const job = new CronJob("11 * * * *", async () => {
       try {
         const completion = await openai.createChatCompletion({
           model: "gpt-3.5-turbo",
