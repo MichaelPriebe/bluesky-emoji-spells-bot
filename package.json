@@ -3,6 +3,7 @@
   "description": "Bluesky Emoji Spells Bot",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,13 +17,11 @@
     "url": "https://github.com/MichaelPriebe/bluesky-emoji-spells-bot/issues"
   },
   "homepage": "https://github.com/MichaelPriebe/bluesky-emoji-spells-bot#readme",
-  "engines": {
-    "node": "18.x"
-  },
   "dependencies": {
     "@atproto/api": "^0.2.7",
     "cron": "^2.3.0",
     "dotenv": "^16.0.3",
+    "node-fetch": "^2.6.9",
     "openai": "^3.2.1"
   }
 }

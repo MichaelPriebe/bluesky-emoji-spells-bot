@@ -1,12 +1,26 @@
-require("dotenv").config();
+// Dotenv
+
+import dotenv from "dotenv";
+dotenv.config();
+
+// Temporary fetch polyfill until DigitalOcean App Platform supports Node v18
+
+import fetch, { Headers, Request, Response } from "node-fetch";
+
+if (!globalThis.fetch) {
+  globalThis.fetch = fetch;
+  globalThis.Headers = Headers;
+  globalThis.Request = Request;
+  globalThis.Response = Response;
+}
 
 // Cron
 
-const { CronJob } = require("cron");
+import { CronJob } from "cron";
 
 // Openai
 
-const { Configuration, OpenAIApi } = require("openai");
+import { Configuration, OpenAIApi } from "openai";
 const openai = new OpenAIApi(
   new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
@@ -15,7 +29,8 @@ const openai = new OpenAIApi(
 
 // Bluesky
 
-const { BskyAgent } = require("@atproto/api");
+import bsky from "@atproto/api";
+const { BskyAgent } = bsky;
 
 const bluesky = new BskyAgent({
   service: "https://bsky.social",
@@ -51,6 +66,8 @@ bluesky
     password: process.env.BLUESKY_PASSWORD,
   })
   .then(() => {
+    console.log("Logged in!");
+
     const job = new CronJob("0 * * * *", async () => {
       try {
         const completion = await openai.createChatCompletion({
@@ -84,5 +101,6 @@ bluesky
       }
     });
 
+    console.log("Starting job!");
     job.start();
   });
