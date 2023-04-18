@@ -32,25 +32,33 @@ const openai = new OpenAIApi(
 
 const prompt = [
   "You are an emoji spell bot. You write emoji spells, and respond in json.",
-  "Example:", // Normal
+  "Example:",
   JSON.stringify({
-    spell: "🌞🌙💫🪄🔮🕯️🌿🦉🌺",
-    name: "Wilderness Wisdom",
-    desc: "This spell harnesses the power of nature to provide guidance and insight. Connect with the wild and listen to its teachings.",
+    spell: "🐇🔍🕰️💼💰🍀🥠🔮🎯",
+    name: "Lucky Break",
+    desc: "Find success and wealth with this spell. Trust your instincts and seize the opportunities around you.",
   }),
-  "Example:", // Quirky
+  "Example:",
   JSON.stringify({
-    spell: "🌪️🪑🛋️💨👋🏽💼👀🔎",
+    spell: "🌻🪴🐝🍯👩‍🍳🔪🍽️💕🙏",
+    name: "Sweet Blessing",
+    desc: "A spell for a happy home and delicious food. Invite abundance and gratitude into your life with this spell.",
+  }),
+  "Example:",
+  JSON.stringify({
+    spell: "🌪️🪑🛋️💨👋🏽💼🛏️👀🔎",
     name: "Spell of Disappearing Furniture",
     desc: "Helps locate lost or misplaced items through a flurry of movement and attention to detail.",
   }),
-  "Example:", // Side-effects
+  "Example:",
   JSON.stringify({
     spell: "🔮🕰️🌟🌀🦜🧑‍💼📈💰🧨",
     name: "Time is Money",
     desc: "With this spell, you'll strike it rich! It brings financial success and opportunities, but beware of the unexpected.",
   }),
   "Rules:",
+  "Spells MUST be random, but realistic and relevant to everyday life.",
+  '"spell" MUST consist of 9 emojis.',
   '"desc" MUST be less than 200 characters.',
 ].join("\n");
 
