@@ -96,7 +96,7 @@ const job = new CronJob("11 * * * *", async () => {
       "⚡ Zap to empower ✨",
       "🔁 Repost to cast 🪄",
     ].join("\n");
-    await nostr.post(text);
+    nostr.post(text);
   } catch (e) {
     console.error("Error with Nostr:", e);
   }
